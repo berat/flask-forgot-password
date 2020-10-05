@@ -2,6 +2,7 @@ from flask import Flask,render_template,redirect,url_for,request,flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 import random
+import string
 
 app = Flask(__name__)
 app.config['MAIL_SERVER']='smtp.gmail.com'
@@ -32,9 +33,7 @@ def index():
         check = User.query.filter_by(mail=mail).first()
 
         if check:
-            def get_random_string(length=24,allowed_chars='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'):
-                return ''.join(random.choice(allowed_chars) for i in range(length))
-            hashCode = get_random_string()
+            hashCode = ''.join(random.choices(string.ascii_letters + string.digits, k=24))
             check.hashCode = hashCode
             db.session.commit()
             msg = Message('Confirm Password Change', sender = 'berat@github.com', recipients = [mail])
